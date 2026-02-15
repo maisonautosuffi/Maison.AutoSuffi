@@ -99,9 +99,9 @@ export default function Home() {
       {/* INTRO / VISION SECTION */}
       <section style={{ padding: '8rem 0', background: 'var(--color-bg-main)' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '5rem', alignItems: 'center' }}>
-            <div>
-              <h2 className="reveal-text" style={{ fontSize: '3rem', marginBottom: '2rem', color: 'var(--color-text-primary)' }}>Vision <br /> Architecturale</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: '5rem', alignItems: 'center' }}>
+            <div style={{ minWidth: 0 }}>
+              <h2 className="reveal-text" style={{ fontSize: '3rem', marginBottom: '2rem', color: 'var(--color-text-primary)', overflowWrap: 'anywhere' }}>Vision <br /> Architecturale</h2>
               <p className="reveal-text reveal-delay-1" style={{ fontSize: '1.1rem', marginBottom: '2rem', opacity: 0.8 }}>
                 ALTHÉA fusionne l'héritage culturel africain avec les standards les plus exigeants de la construction moderne.
                 Chaque villa est une œuvre conçue pour traverser le temps, minimiser son empreinte et maximiser votre confort.
@@ -110,7 +110,7 @@ export default function Home() {
                 Notre Philosophie &rarr;
               </Link>
             </div>
-            <div style={{ position: 'relative', height: '600px', borderRadius: '2px', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', height: '600px', borderRadius: '2px', overflow: 'hidden', minWidth: 0 }}>
               <Image
                 src="/models/mandela.png" // Placeholder
                 alt="Vision Info"
