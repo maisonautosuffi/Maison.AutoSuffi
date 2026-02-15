@@ -3,6 +3,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
+    box-sizing: border-box;
     z-index: 9999;
     display: none;
     /* Hidden by default on desktop */
@@ -13,7 +14,8 @@
 }
 
 .whatsappButton {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     background-color: #25D366;
     color: white;
     border: none;
@@ -30,7 +32,8 @@
 }
 
 .simulateButton {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     background-color: var(--color-copper);
     color: white;
     border: none;
