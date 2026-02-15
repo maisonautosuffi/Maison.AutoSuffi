@@ -49,8 +49,8 @@ export default function ScrollReveal({
         switch (direction) {
             case 'up': transform += 'translateY(40px)'; break;
             case 'down': transform += 'translateY(-40px)'; break;
-            case 'left': transform += 'translateX(40px)'; break;
-            case 'right': transform += 'translateX(-40px)'; break;
+            case 'left': transform += 'translateX(-40px)'; break;
+            case 'right': transform += 'translateX(40px)'; break;
             default: break;
         }
 

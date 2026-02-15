@@ -32,24 +32,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
+        const buildUserFromSupabase = async (supaUser: { id: string; email?: string | null; user_metadata?: Record<string, unknown> }) => {
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role, full_name')
+                .eq('user_id', supaUser.id)
+                .maybeSingle();
+
+            const nameFromProfile = profile?.full_name || null;
+            const nameFromMetadata =
+                (supaUser.user_metadata?.name as string | undefined) ||
+                (supaUser.user_metadata?.full_name as string | undefined) ||
+                undefined;
+
+            const name = nameFromProfile || nameFromMetadata || supaUser.email || 'Utilisateur';
+            const role = profile?.role || (supaUser.user_metadata?.role as string | undefined) || 'client';
+
+            return {
+                id: supaUser.id,
+                email: supaUser.email || '',
+                name,
+                role,
+            };
+        };
+
         const syncSession = async () => {
             const { data } = await supabase.auth.getSession();
             const supaUser = data.session?.user;
 
             if (supaUser) {
-                const name =
-                    (supaUser.user_metadata?.name as string | undefined) ||
-                    (supaUser.user_metadata?.full_name as string | undefined) ||
-                    supaUser.email ||
-                    'Utilisateur';
-                const role = (supaUser.user_metadata?.role as string | undefined) || 'client';
-
-                setUser({
-                    id: supaUser.id,
-                    email: supaUser.email || '',
-                    name,
-                    role,
-                });
+                const built = await buildUserFromSupabase(supaUser);
+                setUser(built);
             } else {
                 setUser(null);
             }
@@ -61,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+        } = supabase.auth.onAuthStateChange(async (_event: AuthChangeEvent, session: Session | null) => {
             const supaUser = session?.user;
             if (!supaUser) {
                 setUser(null);
@@ -69,19 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            const name =
-                (supaUser.user_metadata?.name as string | undefined) ||
-                (supaUser.user_metadata?.full_name as string | undefined) ||
-                supaUser.email ||
-                'Utilisateur';
-            const role = (supaUser.user_metadata?.role as string | undefined) || 'client';
-
-            setUser({
-                id: supaUser.id,
-                email: supaUser.email || '',
-                name,
-                role,
-            });
+            const built = await buildUserFromSupabase(supaUser);
+            setUser(built);
             setLoading(false);
         });
 

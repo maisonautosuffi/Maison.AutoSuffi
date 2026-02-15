@@ -115,6 +115,12 @@ p {
   /* More breathing room */
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+}
+
 .text-gold {
   color: var(--color-gold);
 }
