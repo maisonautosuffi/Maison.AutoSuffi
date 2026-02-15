@@ -18,6 +18,17 @@ export default function LoginPage() {
         setMounted(true);
     }, []);
 
+    const handleClose = () => {
+        if (!mounted) return;
+
+        if (typeof window !== 'undefined' && window.history.length > 1) {
+            router.back();
+            return;
+        }
+
+        router.push('/');
+    };
+
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -83,6 +94,31 @@ export default function LoginPage() {
                 boxShadow: '0 30px 60px rgba(0,0,0,0.3)', /* Deeper shadow */
                 position: 'relative'
             }} className="animate-slide-up">
+
+                <button
+                    type="button"
+                    onClick={handleClose}
+                    aria-label="Retour à l'accueil"
+                    style={{
+                        position: 'absolute',
+                        top: '14px',
+                        right: '14px',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '999px',
+                        border: '1px solid #E5E5E0',
+                        background: '#FAFAF6',
+                        color: '#1c1917',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '1.25rem',
+                        lineHeight: 1,
+                    }}
+                >
+                    ×
+                </button>
 
                 {/* Logo Section */}
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
