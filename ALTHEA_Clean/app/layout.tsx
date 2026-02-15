@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Montserrat, Lato, Playfair_Display } from "next/font/google";
 import { ConfigProvider } from "@/context/ConfigContext";
 import "./globals.css";
@@ -24,6 +24,11 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "ALTHÉA | Sanctuaire de Paix",
   description: "Propriété éco-responsable et sérénité minérale en Afrique.",
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 import Analytics from "@/components/Analytics";

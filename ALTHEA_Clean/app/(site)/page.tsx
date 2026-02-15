@@ -131,7 +131,7 @@ export default function Home() {
 
         {/* Simple Horizontal Scroll or Grid */}
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))', gap: '3rem' }}>
             {/* Item 1 */}
             <div style={{ position: 'relative', cursor: 'pointer' }}>
               <div style={{ position: 'relative', height: '500px', marginBottom: '1.5rem', overflow: 'hidden' }}>
