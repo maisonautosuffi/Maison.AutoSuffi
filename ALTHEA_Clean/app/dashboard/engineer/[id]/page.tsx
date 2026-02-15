@@ -22,6 +22,8 @@ export default function SiteDetailPage() {
     const { success, info } = useToast();
     const [site, setSite] = useState(initialSite);
 
+    const isMilestoneCompleted = (milestone: { status: string }) => milestone.status === 'VALIDATED';
+
     // Visit Session State
     const [arrivalTime] = useState(new Date().toLocaleTimeString());
     const [departureTime, setDepartureTime] = useState<string | null>(null);
@@ -53,17 +55,17 @@ export default function SiteDetailPage() {
     const toggleMilestone = (milestoneId: number) => {
         const updatedMilestones = site.milestones.map(m => {
             if (m.id === milestoneId) {
-                const newState = !m.completed;
-                if (newState) {
-                    // In real app, we would log this simple toggle too
-                }
-                return { ...m, completed: newState };
+                const alreadyCompleted = isMilestoneCompleted(m);
+                if (alreadyCompleted) return m;
+
+                const today = new Date().toISOString().slice(0, 10);
+                return { ...m, status: 'VALIDATED', date: today };
             }
             return m;
         });
 
         // Update progress
-        const completedCount = updatedMilestones.filter(m => m.completed).length;
+        const completedCount = updatedMilestones.filter(m => isMilestoneCompleted(m)).length;
         const newProgress = Math.round((completedCount / updatedMilestones.length) * 100);
 
         setSite({ ...site, milestones: updatedMilestones, progress: newProgress });
@@ -148,20 +150,20 @@ export default function SiteDetailPage() {
                             <div
                                 key={milestone.id}
                                 className={styles.milestoneItem}
-                                onClick={() => handleMilestoneClick(milestone.id, milestone.label, milestone.completed)}
-                                style={{ cursor: milestone.completed ? 'default' : 'pointer' }}
+                                onClick={() => handleMilestoneClick(milestone.id, milestone.label, isMilestoneCompleted(milestone))}
+                                style={{ cursor: isMilestoneCompleted(milestone) ? 'default' : 'pointer' }}
                             >
-                                <div className={`${styles.checkbox} ${milestone.completed ? styles.checked : ''}`}>
-                                    {milestone.completed && '✓'}
+                                <div className={`${styles.checkbox} ${isMilestoneCompleted(milestone) ? styles.checked : ''}`}>
+                                    {isMilestoneCompleted(milestone) && '✓'}
                                 </div>
                                 <span style={{
-                                    textDecoration: milestone.completed ? 'line-through' : 'none',
-                                    opacity: milestone.completed ? 0.6 : 1,
+                                    textDecoration: isMilestoneCompleted(milestone) ? 'line-through' : 'none',
+                                    opacity: isMilestoneCompleted(milestone) ? 0.6 : 1,
                                     flex: 1
                                 }}>
                                     {milestone.label}
                                 </span>
-                                {(milestone.label.toLowerCase().includes('coulage') || milestone.label.toLowerCase().includes('validation')) && !milestone.completed && (
+                                {(milestone.label.toLowerCase().includes('coulage') || milestone.label.toLowerCase().includes('validation')) && !isMilestoneCompleted(milestone) && (
                                     <span style={{ fontSize: '0.7rem', background: '#fef3c7', color: '#d97706', padding: '2px 6px', borderRadius: '4px' }}>
                                         INSPECTION REQUISE
                                     </span>
