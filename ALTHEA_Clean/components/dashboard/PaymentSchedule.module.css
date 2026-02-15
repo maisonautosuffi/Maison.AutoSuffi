@@ -1,0 +1,217 @@
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.header h3 {
+    font-family: var(--font-playfair);
+    font-size: 1.5rem;
+    color: var(--color-anthracite);
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subtitle {
+    font-family: var(--font-montserrat);
+    font-size: 0.9rem;
+    color: var(--color-warm-grey);
+    margin: 0;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+}
+
+.milestone {
+    display: flex;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+.milestone.paid .icon {
+    border-color: #16a34a;
+    background: #f0fdf4;
+}
+
+.milestone.pending .icon {
+    border-color: var(--color-copper);
+    background: #fffbf7;
+}
+
+.milestone.upcoming .icon {
+    border-color: rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.line {
+    width: 2px;
+    flex: 1;
+    background: rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+}
+
+.content {
+    flex: 1;
+    padding-bottom: 2rem;
+}
+
+.milestoneHeader {
+    margin-bottom: 1rem;
+}
+
+.titleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.titleRow h4 {
+    font-family: var(--font-playfair);
+    font-size: 1.2rem;
+    color: var(--color-anthracite);
+    margin: 0;
+    font-weight: 600;
+}
+
+.statusBadge {
+    font-family: var(--font-montserrat);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.statusBadge.paid {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.statusBadge.pending {
+    background: #fffbf7;
+    color: var(--color-copper);
+}
+
+.statusBadge.upcoming {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--color-warm-grey);
+}
+
+.trigger {
+    font-family: var(--font-montserrat);
+    font-size: 0.85rem;
+    color: var(--color-warm-grey);
+    margin: 0;
+    font-style: italic;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.amount {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.amountValue {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-anthracite);
+}
+
+.percentage {
+    font-family: var(--font-montserrat);
+    font-size: 0.9rem;
+    color: var(--color-warm-grey);
+}
+
+.dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.datePaid,
+.dateDue {
+    font-family: var(--font-montserrat);
+    font-size: 0.9rem;
+    color: var(--color-warm-grey);
+}
+
+.datePaid {
+    color: #16a34a;
+    font-weight: 500;
+}
+
+.payButton {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-copper);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-montserrat);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payButton:hover {
+    background: #b87333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(176, 141, 121, 0.3);
+}
+
+@media (max-width: 768px) {
+    .titleRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .amountValue {
+        font-size: 1.1rem;
+    }
+}

@@ -1,0 +1,168 @@
+.container {
+    padding-top: 100px;
+    min-height: 100vh;
+    background-color: var(--color-off-white);
+}
+
+.hero {
+    background-color: var(--color-terracotta);
+    color: white;
+    padding: 4rem 5%;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.title {
+    font-family: var(--font-montserrat);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.intro {
+    font-family: var(--font-lato);
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 5% 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.introSection {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.largeText {
+    font-family: var(--font-playfair);
+    font-size: 1.8rem;
+    color: var(--color-anthracite);
+    line-height: 1.4;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.stepsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 5rem;
+}
+
+.step {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.number {
+    font-family: var(--font-playfair);
+    font-size: 4rem;
+    font-weight: 400;
+    color: var(--color-copper);
+    opacity: 0.3;
+    line-height: 0.8;
+}
+
+.stepContent h3 {
+    font-family: var(--font-playfair);
+    font-size: 1.6rem;
+    color: var(--color-anthracite);
+    margin-bottom: 0.8rem;
+}
+
+.stepContent p {
+    font-family: var(--font-lato);
+    color: #666;
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+.premiumBox {
+    background-color: white;
+    padding: 3rem;
+    border-left: 4px solid var(--color-gold);
+    margin-bottom: 5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.premiumTitle {
+    font-family: var(--font-playfair);
+    font-size: 2rem;
+    color: var(--color-anthracite);
+    margin-bottom: 2rem;
+}
+
+.premiumList {
+    list-style: none;
+    padding: 0;
+    font-family: var(--font-lato);
+    font-size: 1.1rem;
+    color: #555;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.premiumList li strong {
+    color: var(--color-copper);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.guaranteeBox {
+    background-color: var(--color-anthracite);
+    color: white;
+    padding: 4rem;
+    border-radius: 4px;
+    /* Slightly squarer for luxury feel */
+}
+
+.guaranteeTitle {
+    font-family: var(--font-playfair);
+    color: var(--color-gold);
+    margin-bottom: 3rem;
+    font-size: 2.2rem;
+    text-align: center;
+}
+
+.guarantees {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    text-align: center;
+}
+
+.guaranteeItem h4 {
+    font-family: var(--font-playfair);
+    color: white;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.guaranteeItem p {
+    font-family: var(--font-lato);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+
+    .stepsGrid,
+    .guarantees {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .largeText {
+        font-size: 1.4rem;
+    }
+}

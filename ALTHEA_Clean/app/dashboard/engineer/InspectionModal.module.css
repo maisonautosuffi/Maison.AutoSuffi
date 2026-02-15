@@ -1,0 +1,220 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+    background: white;
+    width: 95%;
+    /* Slightly wider on mobile */
+    max-width: 600px;
+    max-height: 90vh;
+    /* Prevent going off screen */
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    display: flex;
+    /* Flex layout for sticky header/footer */
+    flex-direction: column;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header {
+    background: #f8fafc;
+    padding: 1rem 1.5rem;
+    /* Slightly compact */
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    /* Don't shrink */
+}
+
+/* ... title ... */
+
+.body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    /* Scrollable content */
+    flex: 1;
+    /* Take remaining space */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scroll iOS */
+}
+
+.sectionTitle {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+}
+
+.sectionTitle:first-child {
+    margin-top: 0;
+}
+
+.checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checkItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.checkItem:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.checkItem.checked {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.checkItem.checked .checkbox {
+    background: #22c55e;
+    border-color: #22c55e;
+}
+
+.label {
+    font-weight: 500;
+    color: #334155;
+    flex: 1;
+}
+
+.uploadZone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f8fafc;
+    text-align: center;
+}
+
+.uploadZone:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.uploadZone.done {
+    border-style: solid;
+    border-color: #22c55e;
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.footer {
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.cancelBtn {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: #64748b;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.validateBtn {
+    padding: 0.75rem 1.5rem;
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.validateBtn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.validateBtn:not(:disabled):hover {
+    background: #16a34a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.2);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

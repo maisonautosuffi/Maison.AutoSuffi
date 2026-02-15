@@ -1,0 +1,54 @@
+.container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    display: none;
+    /* Hidden by default on desktop */
+    background: white;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    gap: 1rem;
+}
+
+.whatsappButton {
+    flex: 1;
+    background-color: #25D366;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-family: var(--font-montserrat);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+}
+
+.simulateButton {
+    flex: 1;
+    background-color: var(--color-copper);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-family: var(--font-montserrat);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(176, 141, 121, 0.4);
+}
+
+@media (max-width: 768px) {
+    .container {
+        display: flex;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+}

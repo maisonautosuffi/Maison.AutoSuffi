@@ -1,0 +1,72 @@
+.container {
+    padding-top: 100px;
+    min-height: 100vh;
+    background-color: var(--color-off-white);
+}
+
+.hero {
+    background-color: var(--color-anthracite);
+    color: var(--color-off-white);
+    padding: 4rem 5%;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.title {
+    font-family: var(--font-montserrat);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.intro {
+    font-family: var(--font-lato);
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+.content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 5% 4rem;
+}
+
+.section {
+    margin-bottom: 4rem;
+}
+
+.subtitle {
+    font-family: var(--font-montserrat);
+    font-size: 2rem;
+    color: var(--color-terracotta);
+    margin-bottom: 1.5rem;
+}
+
+.text {
+    font-family: var(--font-lato);
+    line-height: 1.8;
+    color: var(--color-anthracite);
+    margin-bottom: 1.5rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.cardTitle {
+    font-family: var(--font-montserrat);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-jade);
+}

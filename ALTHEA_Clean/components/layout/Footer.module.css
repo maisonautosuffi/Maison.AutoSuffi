@@ -1,0 +1,230 @@
+.footer {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 6rem 5% 4rem;
+    font-family: var(--font-montserrat);
+}
+
+/* Top Section (Newsletter) */
+.topSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    padding-bottom: 3rem;
+}
+
+.newsletter h3 {
+    font-family: var(--font-playfair);
+    font-size: 1.8rem;
+    color: var(--color-copper);
+    margin-bottom: 0.5rem;
+}
+
+.newsletter p {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.subscribeForm {
+    display: flex;
+    gap: 1rem;
+    max-width: 400px;
+}
+
+.subscribeForm input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: var(--font-montserrat);
+}
+
+.subscribeForm input:focus {
+    outline: none;
+    border-color: var(--color-copper);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.subscribeForm button {
+    padding: 12px 24px;
+    background: var(--color-copper);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.subscribeForm button:hover {
+    background: #d4a017;
+}
+
+.socials {
+    display: flex;
+    gap: 1rem;
+}
+
+.socialIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+    background: var(--color-copper);
+    transform: translateY(-3px);
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 3rem;
+    width: 100%;
+}
+
+/* Main Content */
+.content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.address {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.5;
+}
+
+.trustBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    margin-top: 0.5rem;
+}
+
+.brand h3 {
+    font-family: var(--font-playfair);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: var(--color-copper);
+    letter-spacing: 1px;
+}
+
+.brand p {
+    line-height: 1.6;
+    opacity: 0.8;
+    color: #ccc;
+    font-weight: 300;
+}
+
+.column h4 {
+    font-family: var(--font-montserrat);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-copper);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.links {
+    list-style: none;
+}
+
+.links li {
+    margin-bottom: 0.8rem;
+}
+
+.links a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 300;
+    transition: color 0.2s;
+}
+
+.links a:hover {
+    color: var(--color-copper);
+}
+
+/* Bottom Bar */
+.bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.copyright {
+    font-size: 0.85rem;
+    opacity: 0.6;
+}
+
+.partners {
+    font-size: 0.85rem;
+    color: #ccc;
+    opacity: 0.8;
+}
+
+.partners span {
+    color: var(--color-copper);
+    margin-right: 0.5rem;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .content {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+    }
+
+    .brand {
+        grid-column: span 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .topSection {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .subscribeForm {
+        width: 100%;
+        max-width: none;
+    }
+
+    .content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .brand {
+        grid-column: span 1;
+    }
+
+    .bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}
