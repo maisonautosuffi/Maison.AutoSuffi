@@ -11,6 +11,8 @@ export default function EngineerDashboard() {
     const { success, info } = useToast();
     const [sitesData, setSitesData] = useState(sites);
 
+    const isMilestoneCompleted = (milestone: { status: string }) => milestone.status === 'VALIDATED';
+
     // Modal State
     const [isInspectorOpen, setIsInspectorOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<{ siteId: string, milestoneId: number, label: string } | null>(null);
@@ -35,17 +37,18 @@ export default function EngineerDashboard() {
 
                 const updatedMilestones = site.milestones.map(m => {
                     if (m.id === milestoneId) {
-                        const newState = !m.completed;
-                        if (newState) {
-                            success(`Étape "${m.label}" validée pour ${site.name}`, "Validation Chantier");
-                        }
-                        return { ...m, completed: newState };
+                        const alreadyCompleted = isMilestoneCompleted(m);
+                        if (alreadyCompleted) return m;
+
+                        success(`Étape "${m.label}" validée pour ${site.name}`, "Validation Chantier");
+                        const today = new Date().toISOString().slice(0, 10);
+                        return { ...m, status: 'VALIDATED', date: today };
                     }
                     return m;
                 });
 
                 // Update progress estimate based on milestones (simple mock logic)
-                const completedCount = updatedMilestones.filter(m => m.completed).length;
+                const completedCount = updatedMilestones.filter(m => isMilestoneCompleted(m)).length;
                 const newProgress = Math.round((completedCount / updatedMilestones.length) * 100);
 
                 return { ...site, milestones: updatedMilestones, progress: newProgress };
@@ -149,15 +152,15 @@ export default function EngineerDashboard() {
                                     <div
                                         key={milestone.id}
                                         className={styles.milestoneItem}
-                                        onClick={() => handleMilestoneClick(site.id, milestone.id, milestone.label, milestone.completed)}
-                                        style={{ cursor: milestone.completed ? 'default' : 'pointer' }}
+                                        onClick={() => handleMilestoneClick(site.id, milestone.id, milestone.label, isMilestoneCompleted(milestone))}
+                                        style={{ cursor: isMilestoneCompleted(milestone) ? 'default' : 'pointer' }}
                                     >
-                                        <div className={`${styles.checkbox} ${milestone.completed ? styles.checked : ''}`}>
-                                            {milestone.completed && '✓'}
+                                        <div className={`${styles.checkbox} ${isMilestoneCompleted(milestone) ? styles.checked : ''}`}>
+                                            {isMilestoneCompleted(milestone) && '✓'}
                                         </div>
                                         <span style={{
-                                            textDecoration: milestone.completed ? 'line-through' : 'none',
-                                            opacity: milestone.completed ? 0.6 : 1
+                                            textDecoration: isMilestoneCompleted(milestone) ? 'line-through' : 'none',
+                                            opacity: isMilestoneCompleted(milestone) ? 0.6 : 1
                                         }}>
                                             {milestone.label}
                                         </span>

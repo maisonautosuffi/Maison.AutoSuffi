@@ -18,6 +18,9 @@ export default function TechnicianSitePage() {
 
     const { success, info } = useToast();
     const [site, setSite] = useState(initialSite);
+
+    const isMilestoneCompleted = (milestone: { status: string }) => milestone.status === 'VALIDATED';
+
     const [arrivalTime] = useState(new Date().toLocaleTimeString());
     const [departureTime, setDepartureTime] = useState<string | null>(null);
 
@@ -47,7 +50,13 @@ export default function TechnicianSitePage() {
 
     const toggleMilestone = (milestoneId: number) => {
         const updatedMilestones = site.milestones.map(m => {
-            if (m.id === milestoneId) return { ...m, completed: !m.completed };
+            if (m.id === milestoneId) {
+                const alreadyCompleted = isMilestoneCompleted(m);
+                if (alreadyCompleted) return m;
+
+                const today = new Date().toISOString().slice(0, 10);
+                return { ...m, status: 'VALIDATED', date: today };
+            }
             return m;
         });
         setSite({ ...site, milestones: updatedMilestones });
@@ -154,12 +163,12 @@ export default function TechnicianSitePage() {
                             <div
                                 key={milestone.id}
                                 className={styles.milestoneItem}
-                                onClick={() => handleMilestoneClick(milestone.id, milestone.label, milestone.completed)}
+                                onClick={() => handleMilestoneClick(milestone.id, milestone.label, isMilestoneCompleted(milestone))}
                             >
-                                <div className={`${styles.checkbox} ${milestone.completed ? styles.checked : ''}`}>
-                                    {milestone.completed && '✓'}
+                                <div className={`${styles.checkbox} ${isMilestoneCompleted(milestone) ? styles.checked : ''}`}>
+                                    {isMilestoneCompleted(milestone) && '✓'}
                                 </div>
-                                <span style={{ flex: 1, textDecoration: milestone.completed ? 'line-through' : 'none' }}>
+                                <span style={{ flex: 1, textDecoration: isMilestoneCompleted(milestone) ? 'line-through' : 'none' }}>
                                     {milestone.label}
                                 </span>
                                 {(milestone.label.toLowerCase().includes('sol') || milestone.label.toLowerCase().includes('ferraillage')) && (
