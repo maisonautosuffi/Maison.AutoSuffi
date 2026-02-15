@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import styles from './DashboardLayout.module.css';
 
 export default function DashboardLayout({
@@ -14,6 +15,7 @@ export default function DashboardLayout({
 }) {
     const pathname = usePathname();
     const { info } = useToast();
+    const { user, logout } = useAuth();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -77,10 +79,12 @@ export default function DashboardLayout({
                 </nav>
 
                 <div className={styles.userProfile}>
-                    <div className={styles.avatar}>JD</div>
+                    <div className={styles.avatar}>
+                        {user?.name ? user.name.slice(0, 1).toUpperCase() : user?.email ? user.email.slice(0, 1).toUpperCase() : 'U'}
+                    </div>
                     <div className={styles.userInfo}>
-                        <p className={styles.userName}>Jean Dupont</p>
-                        <p className={styles.projectRef}>Villa Sankara #A12</p>
+                        <p className={styles.userName}>{user?.name || user?.email || 'Utilisateur'}</p>
+                        <p className={styles.projectRef}>{user?.role ? user.role : ''}</p>
                     </div>
                 </div>
             </aside>
@@ -88,7 +92,7 @@ export default function DashboardLayout({
             {/* Main Content */}
             <main className={`${styles.main} ${isCollapsed ? styles.expanded : ''}`}>
                 <header className={styles.header}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '12px' }}>
                         <button className={styles.menuToggle} onClick={toggleSidebar}>
                             ☰
                         </button>
@@ -103,9 +107,16 @@ export default function DashboardLayout({
                                                         pathname.includes('admin') ? "Administration" : "Mon Espace"}
                         </h1>
                     </div>
-                    <button className={styles.notifButton} onClick={() => info("Vous n'avez pas de nouvelles notifications", "Notifications")}>
-                        🔔
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        {user ? (
+                            <button className={styles.notifButton} onClick={logout}>
+                                Déconnexion
+                            </button>
+                        ) : null}
+                        <button className={styles.notifButton} onClick={() => info("Vous n'avez pas de nouvelles notifications", "Notifications")}>
+                            🔔
+                        </button>
+                    </div>
                 </header>
                 <div className={styles.content}>
                     {children}

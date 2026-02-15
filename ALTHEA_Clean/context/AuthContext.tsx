@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             await supabase.auth.signOut();
         } catch (e) {}
         setUser(null);
-        router.push('/login');
+        router.push('/');
         router.refresh(); // Refresh to update server components/middleware
     };
 
