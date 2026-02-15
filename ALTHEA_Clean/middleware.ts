@@ -1,20 +1,28 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { createSupabaseMiddlewareClient } from '@/lib/supabase/middleware';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const isDashboard = request.nextUrl.pathname.startsWith('/dashboard');
 
     if (isDashboard) {
-        const session = request.cookies.get('auth_session');
-
         // Exception for demo mode (optional, for testing without login)
         // To enable strict security, remove this condition
         const isDemo = request.nextUrl.searchParams.get('demo') === 'true';
         if (isDemo) return NextResponse.next();
 
-        if (!session) {
+        const response = NextResponse.next();
+        const supabase = createSupabaseMiddlewareClient(request, response);
+
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
             return NextResponse.redirect(new URL('/login', request.url));
         }
+
+        return response;
     }
 
     return NextResponse.next();

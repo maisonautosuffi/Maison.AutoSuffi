@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useToast } from '@/context/ToastContext';
+import { supabase } from '@/lib/supabase/client';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -17,24 +18,32 @@ export default function LoginPage() {
         setMounted(true);
     }, []);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
-        setTimeout(() => {
-            setIsLoading(false);
-            if (credentials.id) {
-                success(`Bienvenue sur votre Espace ${role.toUpperCase()}`, "Connexion Réussie");
-                switch (role) {
-                    case 'admin': router.push('/dashboard/admin'); break;
-                    case 'engineer': router.push('/dashboard/timeline'); break;
-                    case 'technician': router.push('/dashboard/technician/T01'); break;
-                    case 'client': router.push('/dashboard/client'); break;
-                }
-            } else {
-                error("Identifiants incorrects", "Erreur");
+        try {
+            const email = credentials.id.trim();
+            const password = credentials.password;
+
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (signInError) {
+                error(signInError.message, 'Erreur');
+                return;
             }
-        }, 1000);
+
+            success(`Bienvenue sur votre Espace ${role.toUpperCase()}`, 'Connexion Réussie');
+            router.push('/dashboard');
+            router.refresh();
+        } catch (e) {
+            error('Identifiants incorrects', 'Erreur');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

@@ -1,7 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 interface User {
     id: string;
@@ -24,59 +26,80 @@ const AuthContext = createContext<AuthContextType>({
     logout: () => { },
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
-        // Check if session cookie exists or fetch /api/auth/me (simulated check)
-        // For now, we rely on the component using this context to set state after login
-        // Or we could implement a /api/auth/session route.
-        // Let's implement a simple check: if we are in a browser and have a cookie? 
-        // Actually, httpOnly cookies can't be read by JS. 
-        // So we should fetch user data.
+        const syncSession = async () => {
+            const { data } = await supabase.auth.getSession();
+            const supaUser = data.session?.user;
 
-        const checkSession = async () => {
-            try {
-                // We need an endpoint to get the current user
-                // For this task, we will skip the 'me' endpoint implementation for speed 
-                // and just rely on local state management or a simple "isLoggedIn" check if passing props
-                // However, for a "Real Condition" test, we should be robust.
-                // Let's just set loading to false for now, assuming visitor.
-                // The API route /api/auth/me would be ideal.
-                setLoading(false);
-            } catch (e) {
-                setLoading(false);
+            if (supaUser) {
+                const name =
+                    (supaUser.user_metadata?.name as string | undefined) ||
+                    (supaUser.user_metadata?.full_name as string | undefined) ||
+                    supaUser.email ||
+                    'Utilisateur';
+                const role = (supaUser.user_metadata?.role as string | undefined) || 'client';
+
+                setUser({
+                    id: supaUser.id,
+                    email: supaUser.email || '',
+                    name,
+                    role,
+                });
+            } else {
+                setUser(null);
             }
+
+            setLoading(false);
         };
-        checkSession();
+
+        syncSession();
+
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+            const supaUser = session?.user;
+            if (!supaUser) {
+                setUser(null);
+                setLoading(false);
+                return;
+            }
+
+            const name =
+                (supaUser.user_metadata?.name as string | undefined) ||
+                (supaUser.user_metadata?.full_name as string | undefined) ||
+                supaUser.email ||
+                'Utilisateur';
+            const role = (supaUser.user_metadata?.role as string | undefined) || 'client';
+
+            setUser({
+                id: supaUser.id,
+                email: supaUser.email || '',
+                name,
+                role,
+            });
+            setLoading(false);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const login = (userData: User) => {
         setUser(userData);
-        localStorage.setItem('user_cache', JSON.stringify(userData)); // Fallback cache
     };
 
     const logout = async () => {
-        // Call logout API to clear cookie
         try {
-            await fetch('/api/auth/logout', { method: 'POST' });
-        } catch (e) { }
-
+            await supabase.auth.signOut();
+        } catch (e) {}
         setUser(null);
-        localStorage.removeItem('user_cache');
         router.push('/login');
         router.refresh(); // Refresh to update server components/middleware
     };
-
-    // Hydrate from localStorage on mount to avoid flicker (Optimistic UI)
-    useEffect(() => {
-        const cached = localStorage.getItem('user_cache');
-        if (cached) {
-            setUser(JSON.parse(cached));
-        }
-    }, []);
 
     return (
         <AuthContext.Provider value={{ user, loading, login, logout }}>
