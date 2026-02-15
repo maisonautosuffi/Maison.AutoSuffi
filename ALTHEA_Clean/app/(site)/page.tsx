@@ -101,7 +101,7 @@ export default function Home() {
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: '5rem', alignItems: 'center' }}>
             <div style={{ minWidth: 0 }}>
-              <h2 className="reveal-text" style={{ fontSize: '3rem', marginBottom: '2rem', color: 'var(--color-text-primary)', overflowWrap: 'anywhere' }}>Vision <br /> Architecturale</h2>
+              <h2 className="reveal-text" style={{ fontSize: 'clamp(2.1rem, 9vw, 3rem)', marginBottom: '2rem', color: 'var(--color-text-primary)', overflowWrap: 'anywhere', whiteSpace: 'nowrap' }}>Vision Architecturale</h2>
               <p className="reveal-text reveal-delay-1" style={{ fontSize: '1.1rem', marginBottom: '2rem', opacity: 0.8 }}>
                 ALTHÉA fusionne l'héritage culturel africain avec les standards les plus exigeants de la construction moderne.
                 Chaque villa est une œuvre conçue pour traverser le temps, minimiser son empreinte et maximiser votre confort.
