@@ -12,6 +12,15 @@ const Header = () => {
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+    const handleNavigate = () => {
+        setIsMenuOpen(false);
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        setIsMenuOpen(false);
+    };
+
     return (
         <header className={styles.header}>
             <div className={styles.topBar}>
@@ -73,16 +82,32 @@ const Header = () => {
 
             {/* Mobile Menu Overlay */}
             <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.menuOpen : ''}`}>
-                <Link href="/" className={styles.mobileLink} onClick={toggleMenu}>Accueil</Link>
-                <Link href="/models" className={styles.mobileLink} onClick={toggleMenu}>Nos Collections</Link>
-                <Link href="#tarifs" className={styles.mobileLink} onClick={toggleMenu}>Le Pack Tech</Link>
-                <Link href="/quartiers" className={styles.mobileLink} onClick={toggleMenu}>Réalisations</Link>
-                <div className={styles.mobileContact}>
-                    <a href="tel:+221338000000">+221 33 800 00 00</a>
+                <div className={styles.mobileLinks}>
+                    <Link href="/" className={styles.mobileLink} onClick={handleNavigate}>Accueil</Link>
+                    <Link href="/models" className={styles.mobileLink} onClick={handleNavigate}>Nos Collections</Link>
+                    <Link href="#tarifs" className={styles.mobileLink} onClick={handleNavigate}>Le Pack Tech</Link>
+                    <Link href="/quartiers" className={styles.mobileLink} onClick={handleNavigate}>Réalisations</Link>
+                    <div className={styles.mobileContact}>
+                        <a href="tel:+221338000000">+221 33 800 00 00</a>
+                    </div>
                 </div>
-                <Link href="/login" className={styles.mobileLogin} onClick={toggleMenu}>
-                    🔒 MON ESPACE PROJET
-                </Link>
+
+                <div className={styles.mobileActions}>
+                    {user ? (
+                        <>
+                            <Link href="/dashboard" className={styles.mobileLogin} onClick={handleNavigate}>
+                                � MON ESPACE PROJET
+                            </Link>
+                            <button type="button" className={styles.mobileLogout} onClick={handleLogout}>
+                                Déconnexion
+                            </button>
+                        </>
+                    ) : (
+                        <Link href="/login" className={styles.mobileLogin} onClick={handleNavigate}>
+                            🔒 CONNEXION
+                        </Link>
+                    )}
+                </div>
             </div>
         </header >
     );
