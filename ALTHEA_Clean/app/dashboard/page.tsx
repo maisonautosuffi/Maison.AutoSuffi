@@ -1,106 +1,131 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import styles from './Dashboard.module.css';
 import TreasuryOverview from '@/components/dashboard/TreasuryOverview';
 import PaymentSchedule from '@/components/dashboard/PaymentSchedule';
+import { supabase } from '@/lib/supabase/client';
 
 export default function DashboardPage() {
-    // Mock project data
-    const projectData = {
-        totalBudget: 90_540_000, // FCFA
-        amountPaid: 22_635_000, // Signature + Fondations paid
-    };
+    const [projects, setProjects] = useState<Array<{ id: string; name: string; status: string; progress: number; current_phase: string | null }>>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [docCount, setDocCount] = useState(0);
+    const [photoCount, setPhotoCount] = useState(0);
+    const [totalBudget, setTotalBudget] = useState(0);
+    const [amountPaid, setAmountPaid] = useState(0);
+    const [paymentMilestones, setPaymentMilestones] = useState<Array<{
+        id: number;
+        name: string;
+        percentage: number;
+        amount: number;
+        status: 'paid' | 'pending' | 'upcoming';
+        dueDate: string;
+        paidDate: string | null;
+        trigger: string;
+    }>>([]);
 
-    const paymentMilestones = [
-        {
-            id: 1,
-            name: 'Signature & Acompte',
-            percentage: 20,
-            amount: 18_108_000,
-            status: 'paid' as const,
-            dueDate: '2026-03-15',
-            paidDate: '2026-03-10',
-            trigger: 'Signature contrat + Validation plans architecturaux'
-        },
-        {
-            id: 2,
-            name: 'Mise en Place DTP',
-            percentage: 5,
-            amount: 4_527_000,
-            status: 'paid' as const,
-            dueDate: '2026-03-20',
-            paidDate: '2026-03-18',
-            trigger: 'Installation Digital Twin (matériel + abonnement durée chantier)'
-        },
-        {
-            id: 3,
-            name: 'Fondations',
-            percentage: 15,
-            amount: 13_581_000,
-            status: 'pending' as const,
-            dueDate: '2026-04-20',
-            paidDate: null,
-            trigger: 'Béton de fondation coulé + Validation géotechnicien'
-        },
-        {
-            id: 4,
-            name: 'Gros Œuvre',
-            percentage: 15,
-            amount: 13_581_000,
-            status: 'upcoming' as const,
-            dueDate: '2026-06-15',
-            paidDate: null,
-            trigger: 'Murs élévés, dalle coulée, charpente posée'
-        },
-        {
-            id: 5,
-            name: 'Mise Hors d\'Eau',
-            percentage: 15,
-            amount: 13_581_000,
-            status: 'upcoming' as const,
-            dueDate: '2026-08-30',
-            paidDate: null,
-            trigger: 'Toiture étanche + Menuiseries extérieures posées'
-        },
-        {
-            id: 6,
-            name: 'Second Œuvre',
-            percentage: 15,
-            amount: 13_581_000,
-            status: 'upcoming' as const,
-            dueDate: '2026-11-15',
-            paidDate: null,
-            trigger: 'Plomberie, électricité, finitions à 70%'
-        },
-        {
-            id: 7,
-            name: 'Finitions',
-            percentage: 10,
-            amount: 9_054_000,
-            status: 'upcoming' as const,
-            dueDate: '2027-01-20',
-            paidDate: null,
-            trigger: 'Peintures, sols, cuisine, salle de bain installés'
-        },
-        {
-            id: 8,
-            name: 'Livraison',
-            percentage: 5,
-            amount: 4_527_000,
-            status: 'upcoming' as const,
-            dueDate: '2027-02-28',
-            paidDate: null,
-            trigger: 'Réception chantier + Levée des réserves'
-        },
-    ];
+    const activeProjectId = useMemo(() => projects[0]?.id ?? 'A12', [projects]);
+
+    useEffect(() => {
+        const load = async () => {
+            setIsLoading(true);
+            try {
+                const { data: projectsData, error: projectsError } = await supabase
+                    .from('projects')
+                    .select('id, name, status, progress, current_phase')
+                    .order('created_at', { ascending: true });
+
+                if (projectsError) throw projectsError;
+                setProjects(projectsData ?? []);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        void load();
+    }, []);
+
+    useEffect(() => {
+        const loadProjectKPIs = async () => {
+            if (!activeProjectId) return;
+
+            const [{ count: docs }, { count: photos }] = await Promise.all([
+                supabase.from('project_documents').select('*', { count: 'exact', head: true }).eq('project_id', activeProjectId),
+                supabase.from('project_photos').select('*', { count: 'exact', head: true }).eq('project_id', activeProjectId),
+            ]);
+
+            setDocCount(docs ?? 0);
+            setPhotoCount(photos ?? 0);
+
+            const [{ data: requests }, { data: payments }] = await Promise.all([
+                supabase
+                    .from('project_payment_requests')
+                    .select('id, description, amount_cents, status, due_date')
+                    .eq('project_id', activeProjectId)
+                    .order('created_at', { ascending: true }),
+                supabase
+                    .from('project_payments')
+                    .select('id, request_id, amount_cents, status, paid_at')
+                    .eq('project_id', activeProjectId)
+                    .order('created_at', { ascending: true }),
+            ]);
+
+            const requestsList = requests ?? [];
+            const paymentsList = payments ?? [];
+
+            const total = requestsList.reduce((sum, r) => sum + (r.amount_cents ?? 0), 0);
+            const paid = paymentsList
+                .filter(p => p.status === 'RECEIVED')
+                .reduce((sum, p) => sum + (p.amount_cents ?? 0), 0);
+
+            setTotalBudget(Math.round(total / 100));
+            setAmountPaid(Math.round(paid / 100));
+
+            if (requestsList.length === 0) {
+                setPaymentMilestones([]);
+                return;
+            }
+
+            const milestoneRows = requestsList.map((r, idx) => {
+                const matchingPayment = paymentsList.find(p => p.request_id === r.id && p.status === 'RECEIVED');
+                const status: 'paid' | 'pending' | 'upcoming' = matchingPayment
+                    ? 'paid'
+                    : r.status === 'DUE'
+                        ? 'pending'
+                        : 'upcoming';
+                const due = r.due_date ?? new Date().toISOString().slice(0, 10);
+
+                const percentage = total > 0 ? Math.round(((r.amount_cents ?? 0) / total) * 100) : 0;
+
+                return {
+                    id: idx + 1,
+                    name: r.description ?? `Étape ${idx + 1}`,
+                    percentage,
+                    amount: Math.round((r.amount_cents ?? 0) / 100),
+                    status,
+                    dueDate: due,
+                    paidDate: matchingPayment?.paid_at ?? null,
+                    trigger: r.description ?? '',
+                };
+            });
+
+            setPaymentMilestones(milestoneRows);
+        };
+
+        void loadProjectKPIs();
+    }, [activeProjectId]);
+
+    const activeProject = projects.find(p => p.id === activeProjectId);
+    const progress = activeProject?.progress ?? 0;
+    const phase = activeProject?.current_phase ?? '';
 
     return (
         <div className={styles.grid}>
             {/* Treasury Overview - NEW */}
             <div className={styles.fullWidth}>
                 <TreasuryOverview
-                    totalBudget={projectData.totalBudget}
-                    amountPaid={projectData.amountPaid}
+                    totalBudget={totalBudget}
+                    amountPaid={amountPaid}
                 />
             </div>
 
@@ -112,31 +137,31 @@ export default function DashboardPage() {
                 </div>
                 <div className={styles.progressContainer}>
                     <div className={styles.progressBar}>
-                        <div className={styles.progress} style={{ width: '35%' }}></div>
+                        <div className={styles.progress} style={{ width: `${progress}%` }}></div>
                     </div>
                     <div className={styles.progressLabels}>
-                        <span>Fondations</span>
-                        <span>35%</span>
+                        <span>{phase || '—'}</span>
+                        <span>{progress}%</span>
                     </div>
                 </div>
                 <div className={styles.nextStep}>
-                    <strong>Prochaine étape :</strong> Coulage dalle RDC (Prévu le 12/03)
+                    <strong>Projet :</strong> {isLoading ? 'Chargement…' : (activeProject?.name ?? '—')}
                 </div>
             </div>
 
             {/* Quick Stats */}
             <div className={styles.statsGrid}>
                 <div className={styles.statCard}>
-                    <span className={styles.statValue}>124</span>
-                    <span className={styles.statLabel}>Jours restants</span>
+                    <span className={styles.statValue}>{projects.length}</span>
+                    <span className={styles.statLabel}>Chantiers</span>
                 </div>
                 <div className={styles.statCard}>
-                    <span className={styles.statValue}>€45k</span>
-                    <span className={styles.statLabel}>Budget consommé</span>
+                    <span className={styles.statValue}>{docCount}</span>
+                    <span className={styles.statLabel}>Documents</span>
                 </div>
                 <div className={styles.statCard}>
-                    <span className={styles.statValue}>12</span>
-                    <span className={styles.statLabel}>Photos ajoutées</span>
+                    <span className={styles.statValue}>{photoCount}</span>
+                    <span className={styles.statLabel}>Photos</span>
                 </div>
             </div>
 

@@ -1,56 +1,96 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './Documents.module.css';
 import EmptyState from '@/components/ui/EmptyState';
 
-const documents = [
-    {
-        id: 1,
-        name: "Contrat de Construction (CCMI)",
-        type: "PDF",
-        size: "2.4 MB",
-        date: "15 Jan 2026",
-        category: "Administratif"
-    },
-    {
-        id: 2,
-        name: "Plans Architecturaux Validés",
-        type: "PDF",
-        size: "15.8 MB",
-        date: "20 Jan 2026",
-        category: "Technique"
-    },
-    {
-        id: 3,
-        name: "Permis de Construire",
-        type: "PDF",
-        size: "1.2 MB",
-        date: "28 Jan 2026",
-        category: "Administratif"
-    },
-    {
-        id: 4,
-        name: "Étude de Sol G1/G2",
-        type: "PDF",
-        size: "4.5 MB",
-        date: "02 Fév 2026",
-        category: "Technique"
-    },
-    {
-        id: 5,
-        name: "Planning Prévisionnel Détaillé",
-        type: "XLS",
-        size: "0.5 MB",
-        date: "10 Fév 2026",
-        category: "Planning"
-    }
-];
+import { supabase } from '@/lib/supabase/client';
+
+type DocRow = {
+    id: string;
+    project_id: string;
+    name: string;
+    category: string | null;
+    mime_type: string | null;
+    file_size_bytes: number | null;
+    storage_path: string | null;
+    created_at: string;
+};
 
 export default function DocumentsPage() {
-    const [docs, setDocs] = useState(documents);
+    const [docs, setDocs] = useState<Array<{
+        id: string;
+        name: string;
+        type: string;
+        size: string;
+        date: string;
+        category: string;
+        storagePath: string | null;
+    }>>([]);
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const [projects, setProjects] = useState<Array<{ id: string }>>([]);
+    const activeProjectId = useMemo(() => projects[0]?.id ?? 'A12', [projects]);
+
+    const formatSize = (bytes: number | null) => {
+        if (!bytes) return '-';
+        const mb = bytes / 1024 / 1024;
+        return `${mb.toFixed(1)} MB`;
+    };
+
+    const formatDateLabel = (iso: string) => {
+        const d = new Date(iso);
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    const inferType = (name: string, mimeType: string | null) => {
+        if (mimeType) {
+            if (mimeType.includes('pdf')) return 'PDF';
+            if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return 'XLS';
+            if (mimeType.includes('image')) return 'IMG';
+        }
+
+        const ext = name.split('.').pop()?.toUpperCase();
+        return ext ?? 'DOC';
+    };
+
+    useEffect(() => {
+        const loadProjects = async () => {
+            const { data } = await supabase.from('projects').select('id').order('created_at', { ascending: true });
+            setProjects(data ?? []);
+        };
+
+        void loadProjects();
+    }, []);
+
+    useEffect(() => {
+        const loadDocs = async () => {
+            if (!activeProjectId) return;
+
+            const { data, error } = await supabase
+                .from('project_documents')
+                .select('id, project_id, name, category, mime_type, file_size_bytes, storage_path, created_at')
+                .eq('project_id', activeProjectId)
+                .order('created_at', { ascending: false });
+
+            if (error) return;
+
+            const mapped = ((data ?? []) as DocRow[]).map(d => ({
+                id: d.id,
+                name: d.name,
+                type: inferType(d.name, d.mime_type),
+                size: formatSize(d.file_size_bytes),
+                date: formatDateLabel(d.created_at),
+                category: d.category ?? '—',
+                storagePath: d.storage_path,
+            }));
+
+            setDocs(mapped);
+        };
+
+        void loadDocs();
+    }, [activeProjectId]);
 
     const handleUploadClick = () => {
         fileInputRef.current?.click();
@@ -60,21 +100,70 @@ export default function DocumentsPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setIsUploading(true);
-        // Simulate upload delay
-        setTimeout(() => {
-            const newDoc = {
-                id: docs.length + 1,
-                name: file.name,
-                type: file.name.split('.').pop()?.toUpperCase() || "DOC",
-                size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
-                date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
-                category: "Importé"
-            };
-            setDocs([newDoc, ...docs]);
-            setIsUploading(false);
-            alert(`Document "${file.name}" ajouté avec succès !`);
-        }, 1500);
+        const run = async () => {
+            setIsUploading(true);
+            try {
+                const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+                const path = `${activeProjectId}/${Date.now()}_${safeName}`;
+
+                const { error: uploadError } = await supabase
+                    .storage
+                    .from('project-documents')
+                    .upload(path, file, { contentType: file.type, upsert: false });
+
+                if (uploadError) {
+                    return;
+                }
+
+                const { data: inserted, error: insertError } = await supabase
+                    .from('project_documents')
+                    .insert({
+                        project_id: activeProjectId,
+                        name: file.name,
+                        category: 'Importé',
+                        mime_type: file.type || null,
+                        file_size_bytes: file.size,
+                        storage_path: path,
+                    })
+                    .select('id, name, category, mime_type, file_size_bytes, storage_path, created_at')
+                    .single();
+
+                if (insertError || !inserted) {
+                    return;
+                }
+
+                setDocs(current => [
+                    {
+                        id: inserted.id,
+                        name: inserted.name,
+                        type: inferType(inserted.name, inserted.mime_type),
+                        size: formatSize(inserted.file_size_bytes),
+                        date: formatDateLabel(inserted.created_at),
+                        category: inserted.category ?? '—',
+                        storagePath: inserted.storage_path,
+                    },
+                    ...current,
+                ]);
+            } finally {
+                setIsUploading(false);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            }
+        };
+
+        void run();
+    };
+
+    const handleDownload = async (doc: { storagePath: string | null; name: string }) => {
+        if (!doc.storagePath) return;
+
+        const { data, error } = await supabase
+            .storage
+            .from('project-documents')
+            .createSignedUrl(doc.storagePath, 60);
+
+        if (error || !data?.signedUrl) return;
+
+        window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
     };
 
     return (
@@ -121,7 +210,7 @@ export default function DocumentsPage() {
                                 </div>
                                 <span className={styles.categoryBadge}>{doc.category}</span>
                             </div>
-                            <button className={styles.downloadBtn} aria-label="Télécharger">
+                            <button className={styles.downloadBtn} aria-label="Télécharger" onClick={() => void handleDownload(doc)}>
                                 ⬇️
                             </button>
                         </div>

@@ -1,15 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './Engineer.module.css';
 import { useToast } from '@/context/ToastContext';
 import InspectionModal from './InspectionModal';
-
-import { sites } from '@/data/sites';
+import { supabase } from '@/lib/supabase/client';
 
 export default function EngineerDashboard() {
     const { success, info } = useToast();
-    const [sitesData, setSitesData] = useState(sites);
+
+    const [projects, setProjects] = useState<Array<{
+        id: string;
+        name: string;
+        location: string | null;
+        status: string;
+        progress: number;
+        current_phase: string | null;
+        sensors: { temp: string; humidity: string; noise: string };
+        milestones: Array<{ id: number; label: string; status: string; date: string | null }>;
+    }>>([]);
+
+    const activeProjectId = useMemo(() => projects[0]?.id ?? 'A12', [projects]);
 
     const isMilestoneCompleted = (milestone: { status: string }) => milestone.status === 'VALIDATED';
 
@@ -30,30 +41,112 @@ export default function EngineerDashboard() {
         }
     };
 
+    useEffect(() => {
+        const load = async () => {
+            const { data: projectsData, error: projectsError } = await supabase
+                .from('projects')
+                .select('id, name, location, status, progress, current_phase')
+                .order('created_at', { ascending: true });
+
+            if (projectsError || !projectsData) {
+                return;
+            }
+
+            const projectIds = projectsData.map(p => p.id as string);
+
+            const milestonesByProject = new Map<string, Array<{ id: number; label: string; status: string; date: string | null }>>();
+
+            await Promise.all(
+                projectIds.map(async (pid) => {
+                    const { data: milestonesData } = await supabase
+                        .from('project_milestones')
+                        .select('id, label, status, validated_at')
+                        .eq('project_id', pid)
+                        .order('id', { ascending: true });
+
+                    const mapped = (milestonesData ?? []).map(m => ({
+                        id: m.id as number,
+                        label: m.label as string,
+                        status: m.status as string,
+                        date: (m.validated_at as string | null) ?? null,
+                    }));
+
+                    milestonesByProject.set(pid, mapped);
+                })
+            );
+
+            setProjects(projectsData.map(p => ({
+                id: p.id as string,
+                name: p.name as string,
+                location: (p.location as string | null) ?? null,
+                status: (p.status as string) ?? 'ACTIVE',
+                progress: (p.progress as number) ?? 0,
+                current_phase: (p.current_phase as string | null) ?? null,
+                sensors: { temp: '—', humidity: '—', noise: '—' },
+                milestones: milestonesByProject.get(p.id as string) ?? [],
+            })));
+        };
+
+        void load();
+    }, [activeProjectId]);
+
     const toggleMilestone = (siteId: string, milestoneId: number) => {
-        setSitesData(current =>
-            current.map(site => {
-                if (site.id !== siteId) return site;
+        const run = async () => {
+            const today = new Date().toISOString().slice(0, 10);
 
-                const updatedMilestones = site.milestones.map(m => {
-                    if (m.id === milestoneId) {
-                        const alreadyCompleted = isMilestoneCompleted(m);
-                        if (alreadyCompleted) return m;
+            const { error: updateError } = await supabase
+                .from('project_milestones')
+                .update({ status: 'VALIDATED', validated_at: today })
+                .eq('id', milestoneId)
+                .eq('project_id', siteId);
 
-                        success(`Étape "${m.label}" validée pour ${site.name}`, "Validation Chantier");
-                        const today = new Date().toISOString().slice(0, 10);
-                        return { ...m, status: 'VALIDATED', date: today };
+            if (updateError) {
+                info("Impossible de valider cette étape pour le moment.", 'Erreur');
+                return;
+            }
+
+            const { data: milestonesData, error: milestonesError } = await supabase
+                .from('project_milestones')
+                .select('id, label, status, validated_at')
+                .eq('project_id', siteId)
+                .order('id', { ascending: true });
+
+            if (milestonesError) {
+                info("Étape validée, mais rafraîchissement des données impossible.", 'Info');
+                return;
+            }
+
+            const mappedMilestones = (milestonesData ?? []).map(m => ({
+                id: m.id as number,
+                label: m.label as string,
+                status: m.status as string,
+                date: (m.validated_at as string | null) ?? null,
+            }));
+
+            const completedCount = mappedMilestones.filter(m => isMilestoneCompleted(m)).length;
+            const newProgress = mappedMilestones.length > 0 ? Math.round((completedCount / mappedMilestones.length) * 100) : 0;
+
+            await supabase
+                .from('projects')
+                .update({ progress: newProgress })
+                .eq('id', siteId);
+
+            let projectName = siteId;
+            setProjects(current =>
+                current.map(p => {
+                    if (p.id === siteId) {
+                        projectName = p.name;
                     }
-                    return m;
-                });
+                    if (p.id !== siteId) return p;
+                    return { ...p, milestones: mappedMilestones, progress: newProgress };
+                })
+            );
 
-                // Update progress estimate based on milestones (simple mock logic)
-                const completedCount = updatedMilestones.filter(m => isMilestoneCompleted(m)).length;
-                const newProgress = Math.round((completedCount / updatedMilestones.length) * 100);
+            const milestoneLabel = mappedMilestones.find(m => m.id === milestoneId)?.label ?? '';
+            success(`Étape "${milestoneLabel}" validée pour ${projectName}`, 'Validation Chantier');
+        };
 
-                return { ...site, milestones: updatedMilestones, progress: newProgress };
-            })
-        );
+        void run();
     };
 
     const handleInspectionValidate = () => {
@@ -119,7 +212,7 @@ export default function EngineerDashboard() {
             <h2 className={styles.sectionTitle}>📡 Moniteur de Chantiers (Live)</h2>
 
             <div className={styles.sitesGrid}>
-                {sitesData.map(site => (
+                {projects.map(site => (
                     <div key={site.id} className={styles.siteCard}>
                         <div className={styles.siteHeader}>
                             <div>
