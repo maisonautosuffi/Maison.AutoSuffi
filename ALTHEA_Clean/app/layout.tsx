@@ -1,24 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Lato, Playfair_Display } from "next/font/google";
+import { Montserrat, Cormorant_Garamond } from "next/font/google";
 import { ConfigProvider } from "@/context/ConfigContext";
 import "./globals.css";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"], // Added weights for UI
+  weight: ["300", "400", "500", "600"],
 });
 
-const lato = Lato({
-  variable: "--font-lato",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "700"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -42,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${playfair.variable} ${montserrat.variable}`}>
-      <body>
+    <html lang="fr" className={`${cormorant.variable} ${montserrat.variable}`}>
+      <body className="bg-bg-main text-text-primary antialiased selection:bg-gold selection:text-white">
         <ConfigProvider>
           <AuthProvider>
             <ToastProvider>

@@ -1,22 +1,39 @@
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
 
 export async function GET() {
     try {
-        // Test database connection
-        const userCount = await prisma.user.count();
-        const projectCount = await prisma.project.count();
-        const chatCount = await prisma.chatSession.count();
-        const docCount = await prisma.document.count();
+        const cookieStore = await cookies();
+        const supabase = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            {
+                cookies: {
+                    getAll() { return cookieStore.getAll() }
+                }
+            }
+        );
+
+        // Test database connection using the V1 models
+        const { count: profileCount, error: profileError } = await supabase
+            .from('profiles')
+            .select('*', { count: 'exact', head: true });
+
+        if (profileError) throw profileError;
+
+        const { count: projectCount, error: projectError } = await supabase
+            .from('project')
+            .select('*', { count: 'exact', head: true });
+
+        if (projectError) throw projectError;
 
         return NextResponse.json({
             status: 'ok',
             database: 'connected',
             stats: {
-                users: userCount,
+                profiles: profileCount,
                 projects: projectCount,
-                chatSessions: chatCount,
-                documents: docCount,
             },
             timestamp: new Date().toISOString(),
         });
