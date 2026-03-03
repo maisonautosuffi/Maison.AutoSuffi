@@ -17,13 +17,13 @@ export function Button({
     ...props
 }: ButtonProps) {
 
-    const baseStyles = 'inline-flex items-center justify-center font-sans font-medium uppercase tracking-widest transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+    const baseStyles = 'inline-flex items-center justify-center font-sans font-medium uppercase tracking-widest transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md'
 
     const variants = {
-        primary: 'bg-text-primary text-bg-main hover:bg-gold hover:text-white',
-        secondary: 'bg-gold text-white hover:bg-gold-hover',
+        primary: 'bg-brand-confidence text-white hover:bg-brand-confidence-hover',
+        secondary: 'bg-brand-accent text-white hover:bg-brand-accent-hover',
         outline: 'border border-text-primary text-text-primary hover:bg-text-primary hover:text-bg-main',
-        ghost: 'text-text-primary hover:text-gold border-b border-transparent hover:border-gold pb-1 rounded-none'
+        ghost: 'text-text-primary hover:text-brand-confidence border-b border-transparent hover:border-brand-confidence pb-1 rounded-none shadow-none hover:shadow-none'
     }
 
     const sizes = {
@@ -34,7 +34,7 @@ export function Button({
 
     const classes = twMerge(
         baseStyles,
-        variant !== 'ghost' && 'rounded-sm', // Slight rounding for a modern yet classic feel
+        variant !== 'ghost' && 'rounded-lg', // Premium, gentle rounding
         variants[variant],
         variant !== 'ghost' && sizes[size],
         className

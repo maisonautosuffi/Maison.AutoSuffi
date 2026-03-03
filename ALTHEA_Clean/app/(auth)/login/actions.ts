@@ -34,14 +34,28 @@ export async function loginAction(prevState: any, formData: FormData) {
         }
     )
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
     })
 
-    if (error) {
+    if (error || !data.user) {
         return { error: 'Identifiants invalides. Veuillez réessayer.' }
     }
 
-    redirect('/dashboard')
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .single()
+
+    const role = profile?.role || 'client'
+
+    if (role === 'admin') {
+        redirect('/backoffice/projects')
+    } else if (role === 'technicien' || role === 'ingenieur') {
+        redirect('/terrain')
+    } else {
+        redirect('/dashboard')
+    }
 }

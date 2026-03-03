@@ -17,8 +17,8 @@ export default async function IssuesPage({ params }: { params: Promise<{ id: str
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    const { data: project } = await supabase
-        .from('project')
+    const { data: project, error } = await supabase
+        .from('projects')
         .select(`
             *,
             issues ( * ),
@@ -27,11 +27,13 @@ export default async function IssuesPage({ params }: { params: Promise<{ id: str
         .eq('id', projectId)
         .single()
 
-    // Sort desc manually if needed
-    if (project?.issues) project.issues.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    if (project?.deliveries) project.deliveries.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    if (error) console.error("Error fetching project issues:", error);
 
-    if (!project || project.clientUserId !== user.id) {
+    // Sort desc manually if needed
+    if (project?.issues) project.issues.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    if (project?.deliveries) project.deliveries.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+    if (!project || project.client_user_id !== user.id) {
         redirect('/dashboard')
     }
 
@@ -65,7 +67,7 @@ export default async function IssuesPage({ params }: { params: Promise<{ id: str
                                 <Card key={issue.id} className="p-5 border-l-4 border-l-red-500 bg-red-500/5">
                                     <div className="flex justify-between items-start mb-2">
                                         <span className="text-xs font-bold text-red-600 bg-red-500/10 px-2 py-1 rounded uppercase">{issue.priority}</span>
-                                        <span className="text-xs text-text-secondary">{new Date(issue.createdAt).toLocaleDateString()}</span>
+                                        <span className="text-xs text-text-secondary">{new Date(issue.created_at).toLocaleDateString()}</span>
                                     </div>
                                     <h4 className="font-sans font-medium text-text-primary mb-1">{issue.category}</h4>
                                     <p className="text-sm text-text-secondary">{issue.description}</p>
@@ -80,7 +82,7 @@ export default async function IssuesPage({ params }: { params: Promise<{ id: str
                             {closedIssues.map((issue: any) => (
                                 <Card key={issue.id} className="p-5 border-l-4 border-l-green-500 bg-green-500/5 opacity-75">
                                     <div className="flex justify-between items-start mb-2">
-                                        <span className="text-xs font-bold text-green-700 bg-green-500/10 px-2 py-1 rounded uppercase">LEVÉE LE {issue.closedAt ? new Date(issue.closedAt).toLocaleDateString() : 'N/A'}</span>
+                                        <span className="text-xs font-bold text-green-700 bg-green-500/10 px-2 py-1 rounded uppercase">LEVÉE LE {issue.updated_at ? new Date(issue.updated_at).toLocaleDateString() : 'N/A'}</span>
                                     </div>
                                     <h4 className="font-sans font-medium text-text-primary mb-1 line-through decoration-green-500/50">{issue.category}</h4>
                                     <p className="text-sm text-text-secondary">{issue.description}</p>
@@ -114,15 +116,15 @@ export default async function IssuesPage({ params }: { params: Promise<{ id: str
                                             {delivery.status}
                                         </span>
                                     </div>
-                                    {delivery.status === 'ANOMALY' && delivery.anomalyDetails && (
+                                    {delivery.status === 'ANOMALY' && delivery.anomaly_details && (
                                         <div className="mt-3 p-3 bg-red-500/5 rounded border border-red-500/10">
                                             <p className="text-xs text-red-600 font-medium">Anomalie signalée:</p>
-                                            <p className="text-xs text-text-secondary mt-1">{delivery.anomalyDetails}</p>
+                                            <p className="text-xs text-text-secondary mt-1">{delivery.anomaly_details}</p>
                                         </div>
                                     )}
                                     <div className="mt-4 pt-4 border-t border-text-accent/5 flex justify-between items-center text-xs text-text-secondary">
                                         <span>Fournisseur: {delivery.supplier || 'Non renseigné'}</span>
-                                        <span>Reçu le {new Date(delivery.createdAt).toLocaleDateString()}</span>
+                                        <span>Reçu le {new Date(delivery.created_at).toLocaleDateString()}</span>
                                     </div>
                                 </Card>
                             ))}

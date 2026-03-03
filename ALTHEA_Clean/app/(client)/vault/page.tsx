@@ -18,18 +18,20 @@ export default async function GlobalVaultPage() {
     if (!user) redirect('/login')
 
     // Fetch all documents across all projects for this user
-    const { data: projects } = await supabase
-        .from('project')
+    const { data: projects, error } = await supabase
+        .from('projects')
         .select(`
             id,
             name,
             documents (*)
         `)
-        .eq('clientUserId', user.id)
+        .eq('client_user_id', user.id)
+
+    if (error) console.error("Error fetching projects for vault:", error);
 
     const allDocs = (projects || []).flatMap((p: any) =>
-        (p.documents || []).map((d: any) => ({ ...d, projectName: p.name, projectId: p.id }))
-    ).sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        (p.documents || []).map((d: any) => ({ ...d, projectName: p.name, project_id: p.id }))
+    ).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
     return (
         <div className="space-y-8 reveal-text">
@@ -74,12 +76,12 @@ export default async function GlobalVaultPage() {
                                             <span className="bg-bg-alt px-2 py-1 rounded text-xs border border-text-accent/10">{doc.category}</span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <Link href={`/project/${doc.projectId}`} className="text-gold hover:underline">
+                                            <Link href={`/project/${doc.project_id}`} className="text-gold hover:underline">
                                                 {doc.projectName}
                                             </Link>
                                         </td>
                                         <td className="px-6 py-4 text-text-secondary">
-                                            {new Date(doc.createdAt).toLocaleDateString()}
+                                            {new Date(doc.created_at).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <a href={doc.url} download target="_blank" rel="noreferrer">

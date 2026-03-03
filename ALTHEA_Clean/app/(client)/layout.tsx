@@ -1,6 +1,28 @@
 import React from 'react'
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default async function ClientLayout({ children }: { children: React.ReactNode }) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        redirect('/login')
+    }
+
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single()
+
+    const role = profile?.role || 'client'
+
+    if (role === 'technicien' || role === 'ingenieur') {
+        redirect('/terrain')
+    }
+
     return (
         <div className="flex h-screen bg-bg-alt font-sans">
             {/* Client Sidebar */}
@@ -10,9 +32,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     <span className="block text-xs uppercase tracking-widest text-gold mt-1">Client Space</span>
                 </div>
                 <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-                    <a href="/dashboard" className="block px-4 py-3 rounded-md text-sm font-medium text-text-primary bg-text-accent/5 hover:bg-gold/10 hover:text-gold transition-colors">Mes Projets</a>
-                    <a href="/dashboard/documents" className="block px-4 py-3 rounded-md text-sm font-medium text-text-secondary hover:bg-text-accent/5 transition-colors">Coffre-fort</a>
-                    <a href="/dashboard/settings" className="block px-4 py-3 rounded-md text-sm font-medium text-text-secondary hover:bg-text-accent/5 transition-colors">Paramètres</a>
+                    <Link href="/dashboard" className="block px-4 py-3 rounded-md text-sm font-medium text-text-primary bg-text-accent/5 hover:bg-gold/10 hover:text-gold transition-colors">Mes Projets</Link>
+                    <Link href="/vault" className="block px-4 py-3 rounded-md text-sm font-medium text-text-secondary hover:bg-text-accent/5 transition-colors">Coffre-fort</Link>
+                    <Link href="/settings" className="block px-4 py-3 rounded-md text-sm font-medium text-text-secondary hover:bg-text-accent/5 transition-colors">Paramètres</Link>
                 </nav>
             </aside>
 

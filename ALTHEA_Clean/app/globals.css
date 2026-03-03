@@ -1,18 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-dark: #1c1917;
+  /* BASE NEUTRAL: Blanc cassé / Ivoire */
   --color-bg-main: #FAFAF9;
   --color-bg-alt: #F5F5F4;
   --color-bg-card: #FFFFFF;
+  --color-bg-dark: #1C1917;
+  /* Gris anthracite profond */
 
-  --color-text-primary: #1c1917;
-  --color-text-secondary: #57534e;
-  --color-text-accent: #a8a29e;
-  --color-text-light: #fafaf9;
+  /* TEXT COLORS */
+  --color-text-primary: #1C1917;
+  --color-text-secondary: #57534E;
+  --color-text-accent: #A8A29E;
+  --color-text-light: #FAFAF9;
 
-  --color-gold: #b08d55;
-  --color-gold-hover: #d4b88f;
+  /* BRAND COLORS: Premium & Confiance */
+  --color-brand-confidence: #0F172A;
+  /* Bleu profond "Banque Privée" */
+  --color-brand-confidence-hover: #1E293B;
+
+  --color-brand-accent: #B08D55;
+  /* Ocre / Cuivre très léger */
+  --color-brand-accent-hover: #D4B88F;
+
+  --color-gold: var(--color-brand-accent);
+  --color-gold-hover: var(--color-brand-accent-hover);
 
   --font-sans: var(--font-montserrat), sans-serif;
   --font-serif: var(--font-cormorant), serif;

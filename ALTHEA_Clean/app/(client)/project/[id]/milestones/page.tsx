@@ -17,11 +17,11 @@ export default async function MilestonesPage({ params }: { params: Promise<{ id:
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    const { data: project } = await supabase
-        .from('project')
+    const { data: project, error } = await supabase
+        .from('projects')
         .select(`
             *,
-            milestones (
+            milestones:project_milestones (
                 *,
                 inspections ( * )
             )
@@ -29,11 +29,13 @@ export default async function MilestonesPage({ params }: { params: Promise<{ id:
         .eq('id', projectId)
         .single()
 
+    if (error) console.error("Error fetching project milestones:", error);
+
     if (project?.milestones) {
-        project.milestones.sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        project.milestones.sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     }
 
-    if (!project || project.clientUserId !== user.id) {
+    if (!project || project.client_user_id !== user.id) {
         redirect('/dashboard')
     }
 
@@ -85,7 +87,7 @@ export default async function MilestonesPage({ params }: { params: Promise<{ id:
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-medium text-text-primary">Inspection de conformité</p>
-                                                        <p className="text-xs text-text-secondary">Date: {new Date(insp.createdAt).toLocaleDateString()}</p>
+                                                        <p className="text-xs text-text-secondary">Date: {new Date(insp.created_at).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
                                                 {insp.pdfUrl ? (

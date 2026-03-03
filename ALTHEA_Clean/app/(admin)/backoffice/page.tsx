@@ -17,9 +17,16 @@ export default async function AdminDashboardPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    const [{ count: projectCount }, { count: activeProfiles }] = await Promise.all([
-        supabase.from('project').select('*', { count: 'exact', head: true }),
-        supabase.from('profiles').select('*', { count: 'exact', head: true })
+    const [
+        { count: projectCount },
+        { count: activeProfiles },
+        { count: pendingMilestonesCount },
+        { count: openIssuesCount }
+    ] = await Promise.all([
+        supabase.from('projects').select('*', { count: 'exact', head: true }),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('project_milestones').select('*', { count: 'exact', head: true }).neq('status', 'VALIDATED'),
+        supabase.from('issues').select('*', { count: 'exact', head: true }).neq('status', 'CLOSED')
     ])
 
     return (
@@ -38,11 +45,11 @@ export default async function AdminDashboardPage() {
                 </Card>
                 <Card className="p-6">
                     <p className="text-text-accent uppercase tracking-widest text-xs font-bold mb-2">Jalons en attente</p>
-                    <p className="text-4xl font-serif text-gold">5</p>
+                    <p className="text-4xl font-serif text-gold">{pendingMilestonesCount || 0}</p>
                 </Card>
                 <Card className="p-6">
                     <p className="text-text-accent uppercase tracking-widest text-xs font-bold mb-2">Réserves Ouvertes</p>
-                    <p className="text-4xl font-serif text-red-500">3</p>
+                    <p className="text-4xl font-serif text-red-500">{openIssuesCount || 0}</p>
                 </Card>
                 <Card className="p-6">
                     <p className="text-text-accent uppercase tracking-widest text-xs font-bold mb-2">Profils Inscrits</p>

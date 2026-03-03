@@ -1,36 +1,36 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 
 export default async function AdminProjectsPage() {
-    const cookieStore = await cookies()
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-        cookies: { getAll() { return cookieStore.getAll() } }
-    })
+    const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    // Fetch projects and join with profiles table based on clientUserId to simulate Prisma `include: { client: true }`
-    const { data: projects } = await supabase
-        .from('project')
+    // Fetch projects and join with profiles table based on client_user_id
+    const { data: projects, error } = await supabase
+        .from('projects')
         .select(`
             *,
-            client:profiles!clientUserId ( * )
+            client:profiles!client_user_id ( * ),
+            issues:issues ( count ),
+            milestones:project_milestones ( count )
         `)
-        .order('createdAt', { ascending: false })
+        .order('created_at', { ascending: false })
+
+    if (error) console.error("Error fetching projects:", error);
 
     // In a real app we'd fetch actual counts. Here we add mock counts initially or fetch them accurately.
     const mappedProjects = (projects || []).map((p: any) => ({
         ...p,
         client: Array.isArray(p.client) ? p.client[0] : p.client, // Handle 1:1 join shape depending on FK constraints
-        _count: { issues: 0, milestones: 0 } // Placeholder for issues/milestones since Supabase nested count queries require `count` param or views
+        _count: {
+            issues: p.issues?.[0]?.count || 0,
+            milestones: p.milestones?.[0]?.count || 0
+        }
     }))
 
     return (
@@ -42,9 +42,11 @@ export default async function AdminProjectsPage() {
                         Consultez et gérez l'ensemble des chantiers ALTHÉA.
                     </p>
                 </div>
-                <Button>
-                    + NOUVEAU PROJET
-                </Button>
+                <Link href="/backoffice/projects/new">
+                    <Button>
+                        + NOUVEAU PROJET
+                    </Button>
+                </Link>
             </div>
 
             <Card className="p-0 overflow-hidden reveal-text reveal-delay-1">
@@ -93,9 +95,11 @@ export default async function AdminProjectsPage() {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                            GÉRER
-                                        </Button>
+                                        <Link href={`/backoffice/projects/${project.id}`}>
+                                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                                GÉRER
+                                            </Button>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}

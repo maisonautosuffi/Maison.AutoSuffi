@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import Link from 'next/link'
 
 export default async function AdminUsersPage() {
     const cookieStore = await cookies()
@@ -33,9 +34,11 @@ export default async function AdminUsersPage() {
                         Gérez les accès, les clients et le personnel sur la plateforme.
                     </p>
                 </div>
-                <Button>
-                    + INVITATION
-                </Button>
+                <Link href="/backoffice/users/invite">
+                    <Button>
+                        + INVITATION
+                    </Button>
+                </Link>
             </div>
 
             <Card className="p-0 overflow-hidden reveal-text reveal-delay-1">

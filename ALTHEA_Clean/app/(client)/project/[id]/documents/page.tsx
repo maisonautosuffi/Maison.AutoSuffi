@@ -17,8 +17,8 @@ export default async function DocumentVaultPage({ params }: { params: Promise<{ 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    const { data: project } = await supabase
-        .from('project')
+    const { data: project, error } = await supabase
+        .from('projects')
         .select(`
             *,
             documents (
@@ -28,12 +28,14 @@ export default async function DocumentVaultPage({ params }: { params: Promise<{ 
         .eq('id', projectId)
         .single()
 
+    if (error) console.error("Error fetching project files:", error);
+
     // Sort documents desc as previously requested via Prisma
     if (project && project.documents) {
-        project.documents.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        project.documents.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     }
 
-    if (!project || project.clientUserId !== user.id) {
+    if (!project || project.client_user_id !== user.id) {
         redirect('/dashboard')
     }
 
@@ -78,7 +80,7 @@ export default async function DocumentVaultPage({ params }: { params: Promise<{ 
                                     <div>
                                         <p className="font-sans font-medium text-text-primary">{doc.name}</p>
                                         <div className="flex items-center gap-3 mt-1 text-xs text-text-secondary font-sans">
-                                            <span>{new Date(doc.createdAt).toLocaleDateString()}</span>
+                                            <span>{new Date(doc.created_at).toLocaleDateString()}</span>
                                             {doc.category && (
                                                 <>
                                                     <span className="w-1 h-1 bg-text-accent/30 rounded-full"></span>
@@ -92,8 +94,8 @@ export default async function DocumentVaultPage({ params }: { params: Promise<{ 
                                     <Button variant="outline" size="sm" className="text-xs">
                                         TÉLÉCHARGER
                                     </Button>
-                                    {doc.sizeBytes && (
-                                        <p className="text-[10px] text-text-secondary mt-2">{(Number(doc.sizeBytes) / 1024 / 1024).toFixed(2)} MB</p>
+                                    {doc.size_bytes && (
+                                        <p className="text-[10px] text-text-secondary mt-2">{(Number(doc.size_bytes) / 1024 / 1024).toFixed(2)} MB</p>
                                     )}
                                 </div>
                             </li>

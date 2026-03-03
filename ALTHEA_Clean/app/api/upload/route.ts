@@ -49,14 +49,14 @@ export async function POST(request: Request) {
 
         // Insert into Document table
         const { data: documentRecord, error: dbError } = await supabase
-            .from('document')
+            .from('documents')
             .insert({
-                projectId,
-                uploadedById: user.id,
+                project_id: projectId,
+                uploaded_by_id: user.id,
                 name: file.name,
                 url: publicUrlData.publicUrl,
                 category: category || 'GENERAL',
-                sizeBytes: file.size
+                size_bytes: file.size
             })
             .select()
             .single();
