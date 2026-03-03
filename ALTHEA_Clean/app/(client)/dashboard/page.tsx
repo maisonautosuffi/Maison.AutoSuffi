@@ -24,7 +24,7 @@ export default async function DashboardPage() {
             <div>
                 <h1 className="text-4xl font-serif text-text-primary mb-2">Mes Projets</h1>
                 <p className="text-text-secondary font-sans">
-                    Bienvenue dans votre espace client ALTHÉA.
+                    Bienvenue dans votre espace client AXIOMIA.
                 </p>
             </div>
 

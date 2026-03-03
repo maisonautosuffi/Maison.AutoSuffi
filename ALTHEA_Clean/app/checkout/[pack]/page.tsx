@@ -46,7 +46,7 @@ export default function CinematicCheckoutPage() {
 
             {/* Header / Progress */}
             <header className="px-6 md:px-12 py-8 flex justify-between items-center z-10">
-                <div onClick={() => router.push('/tarifs')} className="font-serif text-2xl tracking-wide text-brand-confidence cursor-pointer">ALTHÉA</div>
+                <div onClick={() => router.push('/tarifs')} className="font-serif text-2xl tracking-wide text-brand-confidence cursor-pointer">AXIOMIA</div>
                 <div className="flex gap-2">
                     {[1, 2, 3, 4].map(i => (
                         <div key={i} className={`h-1 rounded-full transition-all duration-500 ease-in-out ${i <= step ? 'w-8 bg-brand-accent' : 'w-4 bg-text-accent/20'}`} />
@@ -236,7 +236,7 @@ export default function CinematicCheckoutPage() {
 
                             <div className="space-y-4">
                                 <h2 className="text-3xl md:text-4xl font-serif text-brand-confidence">Tout est prêt, {formData.firstName}.</h2>
-                                <p className="text-text-secondary">Votre environnement est généré. La dernière étape consiste à régler le Setup initial pour activer le déploiement de vos outils ALTHÉA.</p>
+                                <p className="text-text-secondary">Votre environnement est généré. La dernière étape consiste à régler le Setup initial pour activer le déploiement de vos outils AXIOMIA.</p>
                             </div>
 
                             <div className="mx-auto max-w-sm bg-white border border-text-accent/10 p-6 rounded-2xl shadow-sm text-left">

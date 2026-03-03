@@ -2,26 +2,27 @@
 
 @theme {
   /* BASE NEUTRAL: Blanc cassé / Ivoire */
-  --color-bg-main: #FAFAF9;
-  --color-bg-alt: #F5F5F4;
+  --color-bg-main: #FDFBF7;
+  --color-bg-alt: #F4F1ED;
   --color-bg-card: #FFFFFF;
-  --color-bg-dark: #1C1917;
-  /* Gris anthracite profond */
+  --color-bg-dark: #121A2F;
+  /* Deep blue background for dark modes */
 
   /* TEXT COLORS */
-  --color-text-primary: #1C1917;
-  --color-text-secondary: #57534E;
-  --color-text-accent: #A8A29E;
-  --color-text-light: #FAFAF9;
+  --color-text-primary: #1C1E26;
+  /* Graphite instead of pure black/dark gray */
+  --color-text-secondary: #4A505C;
+  --color-text-accent: #8E95A3;
+  --color-text-light: #FDFBF7;
 
-  /* BRAND COLORS: Premium & Confiance */
-  --color-brand-confidence: #0F172A;
-  /* Bleu profond "Banque Privée" */
-  --color-brand-confidence-hover: #1E293B;
+  /* BRAND COLORS: Premium & Institutionnel AXIOMIA */
+  --color-brand-confidence: #0A192F;
+  /* Bleu profond, prestige, banque privée */
+  --color-brand-confidence-hover: #12284C;
 
-  --color-brand-accent: #B08D55;
-  /* Ocre / Cuivre très léger */
-  --color-brand-accent-hover: #D4B88F;
+  --color-brand-accent: #C49A6C;
+  /* Cuivre discret / terre chaude */
+  --color-brand-accent-hover: #DBB58B;
 
   --color-gold: var(--color-brand-accent);
   --color-gold-hover: var(--color-brand-accent-hover);

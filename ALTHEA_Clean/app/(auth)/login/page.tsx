@@ -29,7 +29,7 @@ export default async function LoginPage() {
             <Card className="max-w-md w-full space-y-8 z-10 p-10 md:p-12">
                 <div className="text-center reveal-text">
                     <h2 className="text-4xl text-text-primary mb-2">
-                        Althéa
+                        Axiomia
                     </h2>
                     <p className="text-sm font-sans tracking-widest text-gold uppercase mt-4 mb-8">
                         Sanctuaire de Paix

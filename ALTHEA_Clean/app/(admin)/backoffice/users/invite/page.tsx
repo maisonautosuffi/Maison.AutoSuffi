@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { InviteForm } from './InviteForm'
 
 export const metadata = {
-    title: 'Nouvelle Invitation | ALTHÉA'
+    title: 'Nouvelle Invitation | AXIOMIA'
 }
 
 export default async function InviteUserPage() {

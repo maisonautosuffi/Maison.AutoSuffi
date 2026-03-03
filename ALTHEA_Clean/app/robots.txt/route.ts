@@ -1,6 +1,6 @@
 import type { Metadata, Route } from 'next';
 
-const BASE_URL = 'https://althea.sn';
+const BASE_URL = 'https://axiomia.com';
 
 export function GET(request: Request) {
     return new Response(`User-agent: *

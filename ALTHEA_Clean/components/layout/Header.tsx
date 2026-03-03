@@ -26,7 +26,7 @@ const Header = () => {
             <div className={styles.topBar}>
                 <div className={styles.contactInfo}>
                     <a href="tel:+221338000000" className={styles.phoneLink}>📞 +221 33 800 00 00</a>
-                    <a href="mailto:contact@althea.sn" className={styles.emailLink}>✉️ contact@althea.sn</a>
+                    <a href="mailto:contact@axiomia.com" className={styles.emailLink}>✉️ contact@axiomia.com</a>
                 </div>
                 <div className={styles.topLinks}>
                     <Link href="/faq">FAQ</Link>
@@ -38,8 +38,8 @@ const Header = () => {
             <div className={styles.mainHeader}>
                 <Link href="/" className={styles.logo}>
                     <Image
-                        src="/logo-new.png"
-                        alt="ALTHÉA Logo"
+                        src="/images/axiomia-logo.png"
+                        alt="AXIOMIA Logo"
                         width={480}
                         height={180}
                         className={styles.logoImage}

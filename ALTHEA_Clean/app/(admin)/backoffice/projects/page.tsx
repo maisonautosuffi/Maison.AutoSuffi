@@ -39,7 +39,7 @@ export default async function AdminProjectsPage() {
                 <div>
                     <h1 className="text-3xl font-serif text-text-primary mb-1">Gestion des Projets</h1>
                     <p className="text-text-secondary font-sans text-sm">
-                        Consultez et gérez l'ensemble des chantiers ALTHÉA.
+                        Consultez et gérez l'ensemble des chantiers AXIOMIA.
                     </p>
                 </div>
                 <Link href="/backoffice/projects/new">

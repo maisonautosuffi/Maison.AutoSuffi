@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'ALTHÉA Mobile',
-        short_name: 'ALTHÉA',
-        description: 'Application terrain pour la gestion de chancier ALTHÉA.',
+        name: 'AXIOMIA Mobile',
+        short_name: 'AXIOMIA',
+        description: 'Application terrain pour la gestion de chantier AXIOMIA.',
         start_url: '/terrain',
         display: 'standalone',
         background_color: '#FAF9F6',

@@ -27,7 +27,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {/* Admin Sidebar */}
             <aside className="w-64 bg-bg-dark text-text-light hidden md:flex md:flex-col shadow-xl z-20">
                 <div className="p-6 border-b border-text-accent/20">
-                    <span className="font-serif text-2xl tracking-wide text-white">ALTHÉA</span>
+                    <span className="font-serif text-2xl tracking-wide text-white">AXIOMIA</span>
                     <span className="block text-xs uppercase tracking-widest text-gold mt-1">Opérations & Admin</span>
                 </div>
                 <nav className="flex-1 p-4 space-y-1 overflow-y-auto">

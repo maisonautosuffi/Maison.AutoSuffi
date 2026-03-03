@@ -58,7 +58,7 @@ export default function PaymentSuccessPage() {
                             transition={{ delay: 1, duration: 0.5 }}
                             className="text-xl text-text-secondary font-sans leading-relaxed"
                         >
-                            Félicitations. Votre compte ALTHÉA et votre espace sécurisé sont officiellement activés.
+                            Félicitations. Votre compte AXIOMIA et votre espace sécurisé sont officiellement activés.
                         </motion.p>
                     </div>
 

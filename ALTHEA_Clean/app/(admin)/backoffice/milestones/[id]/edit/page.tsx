@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { MilestoneEditForm } from './MilestoneEditForm'
 
 export const metadata = {
-    title: 'Modifier le Jalon | ALTHÉA'
+    title: 'Modifier le Jalon | AXIOMIA'
 }
 
 export default async function EditMilestonePage({ params }: { params: Promise<{ id: string }> }) {

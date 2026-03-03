@@ -16,8 +16,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "ALTHÉA | Sanctuaire de Paix",
-  description: "Propriété éco-responsable et sérénité minérale en Afrique.",
+  title: "AXIOMIA | Tiers de Confiance & AMO",
+  description: "Bâtissez sereinement en Afrique. Assistance à Maîtrise d'Ouvrage experte, suivi de chantier transparent et paiements sécurisés pour la diaspora.",
 };
 
 export const viewport: Viewport = {

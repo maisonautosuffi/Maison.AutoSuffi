@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://althea.sn';
+const BASE_URL = 'https://axiomia.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const routes = [

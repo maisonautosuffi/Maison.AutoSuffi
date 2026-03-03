@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { MilestoneForm } from './MilestoneForm'
 
 export const metadata = {
-    title: 'Nouveau Jalon | ALTHÉA'
+    title: 'Nouveau Jalon | AXIOMIA'
 }
 
 export default async function NewMilestonePage() {
