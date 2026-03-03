@@ -10,7 +10,7 @@ export default function TarifsPage() {
     const fadeUp = {
         hidden: { opacity: 0, y: 30 },
         visible: (i = 1) => ({
-            opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+            opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6 }
         })
     }
 
@@ -24,7 +24,7 @@ export default function TarifsPage() {
 
     const cardVariant = {
         hidden: { opacity: 0, y: 50 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
     }
 
     return (
