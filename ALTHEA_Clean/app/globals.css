@@ -27,14 +27,14 @@
   --color-gold: var(--color-brand-accent);
   --color-gold-hover: var(--color-brand-accent-hover);
 
-  --font-sans: var(--font-montserrat), sans-serif;
-  --font-serif: var(--font-cormorant), serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-serif: var(--font-playfair), serif;
 }
 
 @layer base {
   :root {
-    --font-cormorant: 'Cormorant Garamond', serif;
-    --font-montserrat: 'Montserrat', sans-serif;
+    --font-playfair: 'Playfair Display', serif;
+    --font-inter: 'Inter', sans-serif;
   }
 
   html {

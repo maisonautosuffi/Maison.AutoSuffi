@@ -43,15 +43,15 @@ const Footer = () => {
 
             <div className={styles.content}>
                 <div className={styles.brand}>
-                    <h3>ALTHÉA</h3>
+                    <h3>AXIOMIA</h3>
                     <p>
-                        Votre sanctuaire de paix.<br />
-                        L'art de vivre en terre africaine.<br />
+                        L'Assistance à Maîtrise d'Ouvrage experte.<br />
+                        Bâtissez à distance, en toute sécurité.<br />
                         <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>RC/NINEA : 006987654 2V2</span>
                     </p>
                     <div className={styles.address}>
-                        Immeuble Arc-en-ciel, Rte de Ouakam<br />
-                        Dakar, Sénégal • Douala, Cameroun
+                        Paris, France • Dakar, Sénégal<br />
+                        Abidjan, Côte d'Ivoire
                     </div>
                 </div>
 
@@ -59,28 +59,25 @@ const Footer = () => {
                     <h4>Navigation</h4>
                     <ul className={styles.links}>
                         <li><Link href="/">Accueil</Link></li>
-                        <li><Link href="/models">Nos Collections</Link></li>
-                        <li><Link href="#tarifs">Le Pack Tech</Link></li>
-                        <li><Link href="/quartiers">Réalisations</Link></li>
+                        <li><Link href="/methodologie">Méthode</Link></li>
+                        <li><Link href="/tarifs">Nos Offres</Link></li>
+                        <li><Link href="/contact">Contact</Link></li>
                         <li><Link href="/login">Espace Client</Link></li>
                     </ul>
                 </div>
 
                 <div className={styles.column}>
-                    <h4>Ressources</h4>
+                    <h4>Ressources & Légal</h4>
                     <ul className={styles.links}>
-                        <li><Link href="/faq">FAQ</Link></li>
-                        <li><Link href="/blog">Blog & Conseils</Link></li>
-                        <li><Link href="/financement">Guide Financement</Link></li>
-                        <li><Link href="/contact-chat">Devis en ligne</Link></li>
+                        <li><Link href="/#faq">FAQ</Link></li>
+                        <li><Link href="/legal">Mentions Légales</Link></li>
+                        <li><Link href="/privacy">Données Personnelles</Link></li>
                     </ul>
                 </div>
 
                 <div className={styles.column}>
                     <h4>Confiance & Sécurité</h4>
                     <ul className={styles.links}>
-                        <li><Link href="/legal">Mentions Légales</Link></li>
-                        <li><Link href="/privacy">Données Personnelles (CNDP)</Link></li>
                         <li className={styles.trustBadge}>
                             🔒 Paiement Sécurisé SSL
                         </li>
@@ -93,7 +90,7 @@ const Footer = () => {
                 <div className={styles.column}>
                     <h4>Contact</h4>
                     <ul className={styles.links}>
-                        <li><a href="mailto:contact@althea.africa">contact@althea.africa</a></li>
+                        <li><a href="mailto:contact@axiomia.com">contact@axiomia.com</a></li>
                         <li><a href="tel:+221338000000">+221 33 800 00 00</a></li>
                         <li style={{ fontSize: '0.8rem', marginTop: '1rem', color: '#B08D79' }}>
                             "Réponse sous 24h garantie."
@@ -104,7 +101,7 @@ const Footer = () => {
 
             <div className={styles.bottom}>
                 <p className={styles.copyright}>
-                    © {new Date().getFullYear()} ALTHÉA. Tous droits réservés.
+                    © {new Date().getFullYear()} AXIOMIA. Tous droits réservés.
                 </p>
                 <div className={styles.partners}>
                     <span>Partenaires:</span> CBAO • BOA • Ecobank • Starlink

@@ -29,9 +29,8 @@ const Header = () => {
                     <a href="mailto:contact@axiomia.com" className={styles.emailLink}>✉️ contact@axiomia.com</a>
                 </div>
                 <div className={styles.topLinks}>
-                    <Link href="/faq">FAQ</Link>
-                    <Link href="/blog">Blog</Link>
-                    {/* Optional: Add logout here or in menu */}
+                    <Link href="/#faq">FAQ</Link>
+                    <Link href="/contact">Contact</Link>
                 </div>
             </div>
 
@@ -50,9 +49,9 @@ const Header = () => {
                 {/* Desktop Nav */}
                 <nav className={styles.nav}>
                     <Link href="/" className={styles.navLink}>Accueil</Link>
-                    <Link href="/models" className={styles.navLink}>Nos Collections</Link>
-                    <Link href="#tarifs" className={styles.navLink}>Le Pack Tech</Link>
-                    <Link href="/quartiers" className={styles.navLink}>Réalisations</Link>
+                    <Link href="/methodologie" className={styles.navLink}>Méthode</Link>
+                    <Link href="/tarifs" className={styles.navLink}>Nos Offres</Link>
+                    <Link href="/contact" className={styles.navLink}>Contact</Link>
 
                     {user ? (
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -84,9 +83,9 @@ const Header = () => {
             <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.menuOpen : ''}`}>
                 <div className={styles.mobileLinks}>
                     <Link href="/" className={styles.mobileLink} onClick={handleNavigate}>Accueil</Link>
-                    <Link href="/models" className={styles.mobileLink} onClick={handleNavigate}>Nos Collections</Link>
-                    <Link href="#tarifs" className={styles.mobileLink} onClick={handleNavigate}>Le Pack Tech</Link>
-                    <Link href="/quartiers" className={styles.mobileLink} onClick={handleNavigate}>Réalisations</Link>
+                    <Link href="/methodologie" className={styles.mobileLink} onClick={handleNavigate}>Méthode</Link>
+                    <Link href="/tarifs" className={styles.mobileLink} onClick={handleNavigate}>Nos Offres</Link>
+                    <Link href="/contact" className={styles.mobileLink} onClick={handleNavigate}>Contact</Link>
                     <div className={styles.mobileContact}>
                         <a href="tel:+221338000000">+221 33 800 00 00</a>
                     </div>
